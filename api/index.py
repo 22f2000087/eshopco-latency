@@ -8,10 +8,12 @@ import os
 
 app = FastAPI()
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-with open(os.path.join(BASE_DIR, "q-vercel-latency.json"), "r") as f:
-    data = json.load(f)
+import os
 
+DATA_PATH = os.path.join(os.path.dirname(__file__), "q-vercel-latency.json")
+
+with open(DATA_PATH, "r") as f:
+    data = json.load(f)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
