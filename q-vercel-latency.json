@@ -9,7 +9,7 @@
     "timestamp": 20250301
   },
   {
-    "region": "apac",
+    "region": "apac", 
     "service": "analytics",
     "latency_ms": 112.19,
     "uptime_pct": 98.702,

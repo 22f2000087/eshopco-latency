@@ -25,11 +25,20 @@ class RequestBody(BaseModel):
 
 @app.post("/api")
 def analyze_latency(body: RequestBody):
-   
     result = {}
 
     for region in body.regions:
         region_data = [d for d in data if d["region"] == region]
+
+        if not region_data:
+            result[region] = {
+                "avg_latency": None,
+                "p95_latency": None,
+                "avg_uptime": None,
+                "breaches": 0,
+                "error": "No data for region"
+            }
+            continue
 
         latencies = [d["latency_ms"] for d in region_data]
         uptimes = [d["uptime_pct"] for d in region_data]
@@ -39,10 +48,15 @@ def analyze_latency(body: RequestBody):
 
         result[region] = {
             "avg_latency": statistics.mean(latencies),
-            "p95_latency": statistics.quantiles(latencies, n=100)[94],
+            "p95_latency": (
+                statistics.quantiles(latencies, n=20)[18]
+                if len(latencies) >= 20
+                else max(latencies)
+            ),
             "avg_uptime": statistics.mean(uptimes),
             "breaches": breaches,
         }
 
     return result
-
+   
+   
